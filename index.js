@@ -34,9 +34,22 @@ const customMiddleware = require('./middlewares/flash');
 //setup assets files folder
 app.use(express.static(path.join(__dirname, "/assets")));
 
+app.use(session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: (1000 * 60 * 100)
+    },
+    store: new MongoStore({
+        mongooseConnection: db,
+        autoRemove: 'disabled'
+    }, function (err) {
+        console.log(err || 'connect-mongodb setup ok');
+    })
+}));
 
-
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //set view engine
